@@ -34,9 +34,10 @@ impl Plugin for AlignmentPlugin {
 fn needleman_wunsch(seq_a: &str, seq_b: &str, match_score: i32, gap_penalty: i32) -> (i32, String, String) {
     let m = seq_a.len();
     let n = seq_b.len();
-    
+    // 创建计分矩阵
     let mut score_matrix = vec![vec![0; n + 1]; m + 1];
 
+    // 边界条件，处理删除和插入的情况
     for i in 1..=m {
         score_matrix[i][0] = score_matrix[i - 1][0] + gap_penalty;
     }
@@ -44,6 +45,7 @@ fn needleman_wunsch(seq_a: &str, seq_b: &str, match_score: i32, gap_penalty: i32
         score_matrix[0][j] = score_matrix[0][j - 1] + gap_penalty;
     }
 
+    // 比对纵向和横向对应元素是否相等
     for i in 1..=m {
         for j in 1..=n {
             let match_value = if seq_a.chars().nth(i - 1) == seq_b.chars().nth(j - 1) {
@@ -51,7 +53,7 @@ fn needleman_wunsch(seq_a: &str, seq_b: &str, match_score: i32, gap_penalty: i32
             } else {
                 -match_score
             };
-
+        // 关键步骤计算当前位置的最大得分情况(动态规划)
             score_matrix[i][j] = *[
                 score_matrix[i - 1][j - 1] + match_value,
                 score_matrix[i - 1][j] + gap_penalty,
@@ -62,7 +64,7 @@ fn needleman_wunsch(seq_a: &str, seq_b: &str, match_score: i32, gap_penalty: i32
             .unwrap();
         }
     }
-
+     // 回溯到最佳比对方式并生成比对之后的序列
     let mut aligned_a = String::new();
     let mut aligned_b = String::new();
     let mut i = m;
@@ -130,7 +132,7 @@ fn smith_waterman(seq_a: &str, seq_b: &str, match_score: i32, gap_penalty: i32) 
     let mut aligned_b = String::new();
     let mut i = max_i;
     let mut j = max_j;
-
+   
     while i > 0 && j > 0 && score_matrix[i][j] > 0 {
         if score_matrix[i][j] == score_matrix[i - 1][j - 1] + if seq_a.chars().nth(i - 1) == seq_b.chars().nth(j - 1) { match_score } else { -match_score } {
             aligned_a.push(seq_a.chars().nth(i - 1).unwrap());
