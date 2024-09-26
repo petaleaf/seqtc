@@ -8,13 +8,13 @@ impl Plugin for SequencePlugin {
         "sequence"
     }
 
+    // 定义该模块的使用参数
     fn command(&self) -> Command {
         Command::new("sequence")
             .about("获取DNA序列的反向互补序列")
             .arg(
                 clap::arg!(-r --reverse "计算反向互补序列")
                     .required(false),
-                    
             )
             .arg(
                 clap::arg!(-g --gc "计算GC含量")
@@ -48,6 +48,7 @@ impl Plugin for SequencePlugin {
 
 
 fn get_reverse_complement(dna: &str) -> String {
+    // 将序列转化为迭代器，这里可以接收实现了Deref<Target=str>的类型（&String也可以）
     dna.chars()
         .rev()
         .map(|c| match c {
@@ -61,6 +62,7 @@ fn get_reverse_complement(dna: &str) -> String {
 }
 
 fn calculate_gc_content(dna: &str) -> f64 {
+    // 计算序列中GC的数
     let gc_count = dna.chars().filter(|&c| c == 'G' || c == 'C').count();
     gc_count as f64 / dna.len() as f64
 }
