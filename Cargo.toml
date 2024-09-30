@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
+bio = "2.0.3"  # 用于序列分析
 serde_json = "1.0"
 rayon = "1.5"  # 用于并行计算
 regex = "1"    # 用于正则表达式匹配（如序列分析）
